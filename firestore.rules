@@ -1,0 +1,114 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll(['uid', 'email', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'displayName', 'photoURL', 'updatedAt'])
+        && data.uid == userId
+        && isValidId(data.uid)
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 254
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 120))
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500))
+        && data.updatedAt == request.time;
+    }
+
+    function isValidUserWishlist(data, userId) {
+      return data.keys().hasAll(['ownerUid', 'people', 'gifts', 'updatedAt'])
+        && data.keys().hasOnly(['ownerUid', 'globalBudget', 'people', 'gifts', 'activeShares', 'updatedAt'])
+        && data.ownerUid == userId
+        && isValidId(data.ownerUid)
+        && (!('globalBudget' in data) || data.globalBudget == null || (data.globalBudget is number && data.globalBudget >= 0 && data.globalBudget <= 1000000))
+        && data.people is list && data.people.size() <= 100
+        && data.gifts is list && data.gifts.size() <= 500
+        && (!('activeShares' in data) || (data.activeShares is list && data.activeShares.size() <= 50))
+        && data.updatedAt == request.time;
+    }
+
+    function isValidSharedWishlist(data, shareId) {
+      return data.keys().hasAll(['id', 'ownerUid', 'title', 'scope', 'people', 'gifts', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'ownerUid', 'title', 'scope', 'personId', 'people', 'gifts', 'createdAt', 'updatedAt'])
+        && data.id == shareId
+        && isValidId(data.id)
+        && isValidId(data.ownerUid)
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 120
+        && data.scope in ['all', 'person']
+        && (!('personId' in data) || data.personId == null || isValidId(data.personId))
+        && data.people is list && data.people.size() <= 100
+        && data.gifts is list && data.gifts.size() <= 500
+        && data.createdAt is timestamp
+        && data.updatedAt == request.time;
+    }
+
+    // Private User Profiles (PII isolated to owner)
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isOwner(userId);
+      allow create: if isValidId(userId) && isOwner(userId) && isValidUserProfile(incoming(), userId);
+      allow update: if isValidId(userId) && isOwner(userId) && isValidUserProfile(incoming(), userId)
+        && incoming().uid == existing().uid;
+      allow delete: if isValidId(userId) && isOwner(userId);
+
+      match /wishlists/{wishlistId} {
+        allow get: if isValidId(userId) && isValidId(wishlistId) && isOwner(userId);
+        allow create: if isValidId(userId) && isValidId(wishlistId) && isOwner(userId)
+          && isValidUserWishlist(incoming(), userId);
+        allow update: if isValidId(userId) && isValidId(wishlistId) && isOwner(userId)
+          && isValidUserWishlist(incoming(), userId)
+          && incoming().ownerUid == existing().ownerUid;
+        allow delete: if isValidId(userId) && isValidId(wishlistId) && isOwner(userId);
+      }
+    }
+
+    // Public Share Links: readable by link ID (no list scraping), writable by owner,
+    // and gift purchase toggle allowed for link recipients without modifying structure.
+    match /shares/{shareId} {
+      allow get: if isValidId(shareId);
+      allow create: if isValidId(shareId)
+        && isSignedIn()
+        && isValidSharedWishlist(incoming(), shareId)
+        && incoming().ownerUid == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update: if isValidId(shareId)
+        && isValidSharedWishlist(incoming(), shareId)
+        && incoming().id == existing().id
+        && incoming().ownerUid == existing().ownerUid
+        && incoming().createdAt == existing().createdAt
+        && (
+          (isSignedIn() && existing().ownerUid == request.auth.uid)
+          || (
+            incoming().diff(existing()).affectedKeys().hasOnly(['gifts', 'updatedAt'])
+            && incoming().title == existing().title
+            && incoming().scope == existing().scope
+            && incoming().people == existing().people
+            && incoming().gifts.size() == existing().gifts.size()
+          )
+        );
+      allow delete: if isValidId(shareId) && isSignedIn() && existing().ownerUid == request.auth.uid;
+    }
+  }
+}

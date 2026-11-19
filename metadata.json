@@ -1,0 +1,6 @@
+{
+  "name": "Atelier Noël",
+  "description": "Organisez votre wishlist de Noël par personne, suivez les prix, liens marchands, achats effectués et budget total à prévoir.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

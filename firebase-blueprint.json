@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private Google-authenticated user profile document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "updatedAt"]
+    },
+    "UserWishlist": {
+      "title": "UserWishlist",
+      "description": "User's private ChristmasList state with people, gifts, budgets, and share metadata.",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "globalBudget": {
+          "type": "number"
+        },
+        "people": {
+          "type": "array"
+        },
+        "gifts": {
+          "type": "array"
+        },
+        "activeShares": {
+          "type": "array"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerUid", "people", "gifts", "updatedAt"]
+    },
+    "SharedWishlistDoc": {
+      "title": "SharedWishlistDoc",
+      "description": "Publicly readable share link snapshot allowing recipients to mark gifts as purchased.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerUid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["all", "person"]
+        },
+        "personId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "people": {
+          "type": "array"
+        },
+        "gifts": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "ownerUid", "title", "scope", "people", "gifts", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profile isolated to the authenticated owner."
+    },
+    "/users/{userId}/wishlists/{wishlistId}": {
+      "schema": { "$ref": "#/entities/UserWishlist" },
+      "description": "User's Christmas wishlist documents."
+    },
+    "/shares/{shareId}": {
+      "schema": { "$ref": "#/entities/SharedWishlistDoc" },
+      "description": "Shareable wishlist snapshots accessible by link ID."
+    }
+  }
+}
