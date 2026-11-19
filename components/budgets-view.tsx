@@ -29,7 +29,6 @@ interface BudgetsViewProps {
   globalBudget: number | null;
   people: Person[];
   gifts: GiftItem[];
-  onUpdateGlobalBudget: (budget: number | null) => void;
   onUpdatePersonBudget: (personId: string, budgetLimit: number | null) => void;
   onAddPerson: () => void;
   onEditPerson: (person: Person) => void;
@@ -281,7 +280,6 @@ export function BudgetsView({
   globalBudget,
   people,
   gifts,
-  onUpdateGlobalBudget,
   onUpdatePersonBudget,
   onAddPerson,
   onEditPerson,
@@ -295,10 +293,6 @@ export function BudgetsView({
   onResetSamples,
   onClearAll,
 }: BudgetsViewProps) {
-  const [editingGlobal, setEditingGlobal] = useState(false);
-  const [globalDraft, setGlobalDraft] = useState(
-    globalBudget != null ? String(globalBudget) : ''
-  );
   const [menuOpen, setMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -328,18 +322,6 @@ export function BudgetsView({
     };
   });
 
-  const handleSaveGlobal = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (globalDraft.trim() === '') {
-      onUpdateGlobalBudget(null);
-      setEditingGlobal(false);
-      return;
-    }
-    const val = parsePriceInput(globalDraft);
-    onUpdateGlobalBudget(val > 0 ? val : null);
-    setEditingGlobal(false);
-  };
-
   return (
     <div className="space-y-5">
       {/* Global Budget Card with Donut + Multi-Segment Bar + Overflow Options */}
@@ -360,57 +342,16 @@ export function BudgetsView({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-xs font-semibold text-neutral-500">
-                  Budget global
+                  Budget global · Somme des personnes
                 </div>
                 <div className="mt-0.5 flex flex-wrap items-baseline gap-2">
                   <span className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 tabular-nums">
                     {formatEuro(totalPlanned)}
                   </span>
-
-                  {editingGlobal ? (
-                    <form
-                      onSubmit={handleSaveGlobal}
-                      className="inline-flex items-center gap-1.5"
-                    >
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        autoFocus
-                        value={globalDraft}
-                        onChange={(e) => setGlobalDraft(e.target.value)}
-                        placeholder="500"
-                        aria-label="Budget global"
-                        className="w-20 px-2.5 py-1 text-xs font-display font-bold tabular-nums bg-neutral-50 border border-pink-200 rounded-xl focus:bg-white focus:border-[#EC4899] focus:outline-none"
-                      />
-                      <button
-                        type="submit"
-                        className="px-2.5 py-1 text-xs font-semibold text-white bg-gradient-to-r from-[#EC4899] to-[#A855F7] rounded-xl"
-                      >
-                        OK
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingGlobal(false)}
-                        className="px-2 py-1 text-xs font-semibold text-neutral-500 bg-neutral-100 rounded-xl"
-                      >
-                        Annuler
-                      </button>
-                    </form>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setGlobalDraft(
-                          globalBudget != null ? String(globalBudget) : ''
-                        );
-                        setEditingGlobal(true);
-                      }}
-                      className="font-display text-sm sm:text-base font-bold text-[#DB2777] hover:underline tabular-nums"
-                    >
-                      {globalBudget != null && globalBudget > 0
-                        ? `/ ${formatEuro(globalBudget)}`
-                        : '+ Définir plafond'}
-                    </button>
+                  {globalBudget != null && globalBudget > 0 && (
+                    <span className="font-display text-base sm:text-lg font-bold text-neutral-400 tabular-nums">
+                      / {formatEuro(globalBudget)}
+                    </span>
                   )}
                 </div>
               </div>

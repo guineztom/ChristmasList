@@ -163,6 +163,15 @@ export function WishlistApp() {
     [state.gifts]
   );
 
+  const computedGlobalBudget = useMemo(() => {
+    const sum = state.people.reduce(
+      (total, p) =>
+        total + (p.budgetLimit != null && p.budgetLimit > 0 ? p.budgetLimit : 0),
+      0
+    );
+    return sum > 0 ? Math.round(sum * 100) / 100 : null;
+  }, [state.people]);
+
   // Show welcome / login / guest-mode screen when neither logged in nor in guest test mode
   if (!authLoading && !user && !guestMode) {
     return (
@@ -306,15 +315,6 @@ export function WishlistApp() {
     setEditingGift(gift ?? null);
     setGiftModalDefaultPersonId(personId);
     setGiftModalOpen(true);
-  };
-
-  const handleUpdateGlobalBudget = (budget: number | null) => {
-    setState((prev) => ({...prev, globalBudget: budget}));
-    showToast(
-      budget != null
-        ? `Budget global : ${formatEuro(budget)}`
-        : 'Budget global retiré'
-    );
   };
 
   const handleShareSaved = (meta: ActiveShareMeta) => {
@@ -629,7 +629,7 @@ export function WishlistApp() {
           <>
             {activeTab === 'gifts' && (
               <DiscoverView
-                globalBudget={state.globalBudget}
+                globalBudget={computedGlobalBudget}
                 people={state.people}
                 gifts={state.gifts}
                 selectedPersonId={selectedPersonId}
@@ -659,10 +659,9 @@ export function WishlistApp() {
 
             {activeTab === 'budgets' && (
               <BudgetsView
-                globalBudget={state.globalBudget}
+                globalBudget={computedGlobalBudget}
                 people={state.people}
                 gifts={state.gifts}
-                onUpdateGlobalBudget={handleUpdateGlobalBudget}
                 onUpdatePersonBudget={handleUpdatePersonBudget}
                 onAddPerson={() => {
                   setEditingPerson(null);
