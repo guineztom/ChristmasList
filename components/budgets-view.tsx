@@ -23,7 +23,6 @@ import {VisualBudgetBar} from '@/components/visual-budget-bar';
 import {
   BudgetDonutChart,
   PersonBudgetMetric,
-  StackedPeopleBarChart,
 } from '@/components/budget-charts';
 
 interface BudgetsViewProps {
@@ -521,33 +520,23 @@ export function BudgetsView({
         </div>
       </section>
 
-      {/* Stacked Bar Chart Card Comparing All People */}
+      {/* Per-Person Donut Cards Grid (NO gift list repetition!) */}
       {people.length > 0 ? (
-        <>
-          <section className="bg-white/95 border border-pink-100 rounded-[28px] p-5 sm:p-6 shadow-[0_8px_30px_rgba(219,39,119,0.06)]">
-            <StackedPeopleBarChart
-              items={personMetrics}
-              onSelectPerson={onOpenPersonGifts}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {people.map((person, index) => (
+            <PersonDonutCard
+              key={person.id}
+              person={person}
+              metric={personMetrics[index]}
+              giftCount={gifts.filter((g) => g.personId === person.id).length}
+              onUpdatePersonBudget={onUpdatePersonBudget}
+              onEditPerson={onEditPerson}
+              onDeletePerson={onDeletePerson}
+              onSharePerson={onSharePerson}
+              onOpenPersonGifts={onOpenPersonGifts}
             />
-          </section>
-
-          {/* Per-Person Donut Cards Grid (NO gift list repetition!) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {people.map((person, index) => (
-              <PersonDonutCard
-                key={person.id}
-                person={person}
-                metric={personMetrics[index]}
-                giftCount={gifts.filter((g) => g.personId === person.id).length}
-                onUpdatePersonBudget={onUpdatePersonBudget}
-                onEditPerson={onEditPerson}
-                onDeletePerson={onDeletePerson}
-                onSharePerson={onSharePerson}
-                onOpenPersonGifts={onOpenPersonGifts}
-              />
-            ))}
-          </div>
-        </>
+          ))}
+        </div>
       ) : (
         <div className="bg-white/95 border border-pink-100 rounded-[28px] p-8 text-center space-y-3 shadow-[0_8px_30px_rgba(219,39,119,0.06)]">
           <p className="font-display text-lg font-bold text-neutral-900">
