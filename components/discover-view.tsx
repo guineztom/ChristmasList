@@ -31,6 +31,7 @@ interface DiscoverViewProps {
   onOpenGiftModal: (personId?: string, gift?: GiftItem) => void;
   onDeleteGift: (giftId: string) => void;
   onOpenPersonModal: () => void;
+  onDeletePerson: (person: Person) => void;
   onOpenShareModal: () => void;
 }
 
@@ -44,6 +45,7 @@ export function DiscoverView({
   onOpenGiftModal,
   onDeleteGift,
   onOpenPersonModal,
+  onDeletePerson,
   onOpenShareModal,
 }: DiscoverViewProps) {
   const [search, setSearch] = useState('');
@@ -173,17 +175,34 @@ export function DiscoverView({
             })}
           </div>
 
-          {/* Search Pill */}
-          <div className="relative w-full md:w-64 shrink-0">
-            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher..."
-              aria-label="Rechercher un cadeau"
-              className="w-full min-h-[40px] pl-10 pr-3.5 py-2 text-sm bg-[#FDF2F8]/60 border border-pink-100 rounded-full text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none transition-colors"
-            />
+          {/* Search Pill + Optional Delete Selected Person */}
+          <div className="flex items-center gap-2 w-full md:w-auto shrink-0">
+            <div className="relative flex-1 md:w-60">
+              <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Rechercher..."
+                aria-label="Rechercher un cadeau"
+                className="w-full min-h-[40px] pl-10 pr-3.5 py-2 text-sm bg-[#FDF2F8]/60 border border-pink-100 rounded-full text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none transition-colors"
+              />
+            </div>
+
+            {selectedPersonId && personMap.get(selectedPersonId) && (
+              <button
+                type="button"
+                onClick={() => {
+                  const person = personMap.get(selectedPersonId);
+                  if (person) onDeletePerson(person);
+                }}
+                title={`Supprimer ${personMap.get(selectedPersonId)?.name}`}
+                aria-label={`Supprimer ${personMap.get(selectedPersonId)?.name}`}
+                className="w-10 h-10 inline-flex items-center justify-center rounded-full bg-rose-50/90 hover:bg-rose-100 text-rose-600 transition-colors shrink-0"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 

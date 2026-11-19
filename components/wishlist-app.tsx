@@ -641,6 +641,7 @@ export function WishlistApp() {
                   setEditingPerson(null);
                   setPersonModalOpen(true);
                 }}
+                onDeletePerson={handleRequestDeletePerson}
                 onOpenShareModal={() => {
                   setShareModalPersonId(selectedPersonId);
                   setShareModalOpen(true);

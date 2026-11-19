@@ -108,7 +108,17 @@ function PersonDonutCard({
           </div>
         </button>
 
-        <div className="relative shrink-0">
+        <div className="flex items-center gap-1.5 relative shrink-0">
+          <button
+            type="button"
+            onClick={() => onDeletePerson(person)}
+            className="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-neutral-100/80 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 transition-colors"
+            aria-label={`Supprimer ${person.name}`}
+            title={`Supprimer ${person.name}`}
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
