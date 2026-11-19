@@ -185,7 +185,7 @@ export function DiscoverView({
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher..."
                 aria-label="Rechercher un cadeau"
-                className="w-full min-h-[40px] pl-10 pr-3.5 py-2 text-sm bg-[#FDF2F8]/60 border border-pink-100 rounded-full text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none transition-colors"
+                className="w-full min-h-[40px] pl-10 pr-3.5 py-2 text-base sm:text-sm bg-[#FDF2F8]/60 border border-pink-100 rounded-full text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none transition-colors"
               />
             </div>
 

@@ -246,7 +246,7 @@ function ShareModalBody({
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.18, ease: [0.16, 1, 0.3, 1]}}
-        className="w-full sm:max-w-md bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden"
+        className="w-full sm:max-w-md bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[85dvh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden pt-3 pb-1 flex justify-center">
@@ -322,7 +322,7 @@ function ShareModalBody({
                 setGeneratedShareId(null);
               }}
               aria-label="Personne à partager"
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 focus:bg-white focus:border-[#EC4899] focus:outline-none"
             >
               {people.map((p) => (
                 <option key={p.id} value={p.id}>

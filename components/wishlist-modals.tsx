@@ -92,7 +92,7 @@ function PersonModalBody({
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.18, ease: [0.16, 1, 0.3, 1]}}
-        className="w-full sm:max-w-md bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden"
+        className="w-full sm:max-w-md bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[85dvh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden pt-3 pb-1 flex justify-center">
@@ -127,14 +127,13 @@ function PersonModalBody({
             <input
               id="person-name"
               type="text"
-              autoFocus
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
                 if (error) setError('');
               }}
               placeholder="Ex. Camille, Papa..."
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
               maxLength={60}
             />
           </div>
@@ -153,7 +152,7 @@ function PersonModalBody({
               value={budgetStr}
               onChange={(e) => setBudgetStr(e.target.value)}
               placeholder="150"
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm font-display font-bold tabular-nums bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-display font-bold tabular-nums bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
             />
           </div>
 
@@ -291,7 +290,7 @@ function GiftModalBody({
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.18, ease: [0.16, 1, 0.3, 1]}}
-        className="w-full sm:max-w-lg bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto"
+        className="w-full sm:max-w-lg bg-white border border-pink-100 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[85dvh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden pt-3 pb-1 flex justify-center">
@@ -328,7 +327,7 @@ function GiftModalBody({
                 id="gift-person"
                 value={personId}
                 onChange={(e) => setPersonId(e.target.value)}
-                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 focus:bg-white focus:border-[#EC4899] focus:outline-none"
               >
                 {people.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -352,7 +351,7 @@ function GiftModalBody({
                 value={priceStr}
                 onChange={(e) => setPriceStr(e.target.value)}
                 placeholder="49,90"
-                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm font-display font-bold tabular-nums bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm font-display font-bold tabular-nums bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
               />
             </div>
           </div>
@@ -367,14 +366,13 @@ function GiftModalBody({
             <input
               id="gift-title"
               type="text"
-              autoFocus
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
                 if (error) setError('');
               }}
               placeholder="Ex. Écharpe en laine, Casque audio..."
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
               maxLength={140}
             />
           </div>
@@ -395,7 +393,7 @@ function GiftModalBody({
                 if (error) setError('');
               }}
               placeholder="https://..."
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
             />
           </div>
 
@@ -412,7 +410,7 @@ function GiftModalBody({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Ex. Taille M, rose poudré"
-              className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-neutral-50 border border-pink-100 rounded-2xl text-neutral-900 placeholder:text-neutral-400 focus:bg-white focus:border-[#EC4899] focus:outline-none"
               maxLength={120}
             />
           </div>
